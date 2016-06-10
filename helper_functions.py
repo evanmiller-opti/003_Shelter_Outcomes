@@ -49,8 +49,9 @@ def data_import(df1, df2):
 
     df['datetime'] = pd.to_datetime(df.datetime)
     df['year'] = df['datetime'].map(lambda x: x.year).astype(str)
-    df['year'] = df['datetime'].map(lambda x: x.month).astype(str)
+    df['month'] = df['datetime'].map(lambda x: x.month).astype(str)
     df['wday'] = df['datetime'].map(lambda x: x.dayofweek).astype(str)
+    df['hour'] = df['datetime'].map(lambda x: x.hour).astype(str)
     
     def has_name(x):
         if x == 'Nameless': return 0
@@ -91,6 +92,10 @@ def prep_data(dataframe, type):
     
     if type == 'test':
         df['color_simple_Ruddy'] = 0
+        df['hour_5'] = 0
+    
+    if type == 'train':
+        df['hour_3'] = 0
     
     from sklearn import preprocessing
     le = preprocessing.LabelEncoder()
@@ -126,7 +131,7 @@ def col_check(train_cols, test_cols):
 def predict_output(clf, file):
 
     print ('Predicting outcomes..')
-    y_pred = rbf_svm.predict_proba(X_test)
+    y_pred = clf.predict_proba(X_test)
 
     df = pd.DataFrame(y_pred)
     df.columns = le_train.classes_
